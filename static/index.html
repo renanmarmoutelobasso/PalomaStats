@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; flex-wrap: wrap; }
+        .widget { border: 1px solid #ccc; padding: 10px; margin: 10px; width: 200px; }
+        .widget h2 { font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="widget" id="dollar-widget">
+        <h2>Dollar Rate</h2>
+        <p id="dollar-rate">Loading...</p>
+    </div>
+
+    <div class="widget" id="oil-widget">
+        <h2>Oil Price</h2>
+        <p id="oil-price">Loading...</p>
+    </div>
+
+    <div class="widget" id="grains-widget">
+        <h2>Grains Price</h2>
+        <p id="grains-price">Loading...</p>
+    </div>
+
+    <div class="widget" id="news-widget">
+        <h2>News</h2>
+        <ul id="news-list"></ul>
+    </div>
+
+    <div class="widget" id="fuel-widget">
+        <h2>Fuel Prices (PR)</h2>
+        <ul id="fuel-list"></ul>
+    </div>
+
+    <script>
+        async function fetchData(url, callback) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                callback(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function updateDollarRate(data) {
+            document.getElementById('dollar-rate').textContent = data.rate;
+        }
+
+        function updateOilPrice(data) {
+            document.getElementById('oil-price').textContent = data.price;
+        }
+
+        function updateGrainsPrice(data) {
+            document.getElementById('grains-price').textContent = data.price;
+        }
+
+        function updateNews(data) {
+            const newsList = document.getElementById('news-list');
+            newsList.innerHTML = '';
+            data.news.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.title} (${item.date})`;
+                newsList.appendChild(li);
+            });
+        }
+
+        function updateFuelPrices(data) {
+            const fuelList = document.getElementById('fuel-list');
+            fuelList.innerHTML = '';
+            data.prices.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.city}: R$ ${item.price}`;
+                fuelList.appendChild(li);
+            });
+        }
+
+        fetchData('/api/dollar', updateDollarRate);
+        fetchData('/api/oil', updateOilPrice);
+        fetchData('/api/grains', updateGrainsPrice);
+        fetchData('/api/news', updateNews);
+        fetchData('/api/fuel_prices', updateFuelPrices);
+
+        // Atualizar os dados a cada minuto (60000 ms)
+        setInterval(() => {
+            fetchData('/api/dollar', updateDollarRate);
+            fetchData('/api/oil', updateOilPrice);
+            fetchData('/api/grains', updateGrainsPrice);
+            fetchData('/api/news', updateNews);
+            fetchData('/api/fuel_prices', updateFuelPrices);
+        }, 60000);
+    </script>
+</body>
+</html>
