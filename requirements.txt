@@ -36,8 +36,6 @@ PyRect==0.2.0
 PyScreeze==0.1.30
 pyserial==3.5
 pytweening==1.2.0
-pywin32-ctypes==0.2.2
-pywinauto==0.6.8
 PyYAML==6.0.2
 requests==2.32.3
 serial==0.0.97
