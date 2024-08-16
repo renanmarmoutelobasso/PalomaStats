@@ -1,9 +1,6 @@
 import os
-from flask import Flask, send_from_directory
-from flask import Flask
-
-app = Flask(__name__)
-
+import random
+from flask import Flask, send_from_directory, jsonify
 
 app = Flask(__name__, static_url_path='', static_folder='static')
 
